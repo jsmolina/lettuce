@@ -654,11 +654,7 @@ class Scenario(object):
 
         matched = []
 
-        if isinstance(self.tags, list):
-            for tag in self.tags:
-                if tag in tags:
-                    return True
-        else:
+        if not isinstance(self.tags, list):
             self.tags = []
 
         for tag in tags:
@@ -670,7 +666,6 @@ class Scenario(object):
             if fuzzable:
                 tag = tag[1:]
 
-            result = tag in self.tags
             if fuzzable:
                 fuzzed = []
                 for internal_tag in self.tags:
@@ -681,10 +676,12 @@ class Scenario(object):
                         fuzzed.append(ratio > 80)
 
                 result = any(fuzzed)
+                matched.append(result)
             elif exclude:
                 result = tag not in self.tags
-
-            matched.append(result)
+                matched.append(result)
+            elif tag in self.tags:
+                matched.append(True)
 
         return all(matched)
 
