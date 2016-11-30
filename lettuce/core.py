@@ -683,7 +683,7 @@ class Scenario(object):
             elif tag in self.tags:
                 matched.append(True)
 
-        return all(matched)
+        return matched and all(matched)
 
     @property
     def evaluated(self):
