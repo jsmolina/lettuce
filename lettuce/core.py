@@ -655,8 +655,10 @@ class Scenario(object):
         matched = []
 
         if isinstance(self.tags, list):
+            positive_tags = [tag for tag in tags if not tag.startswith('-') and not tag.startswith('~')]
+
             for tag in self.tags:
-                if tag in tags:
+                if tag in positive_tags:
                     return True
         else:
             self.tags = []
