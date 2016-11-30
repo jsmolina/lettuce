@@ -1,7 +1,8 @@
 # lettuce
 > Version 0.2.23 - kryptonite
 
-[![Build Status](https://secure.travis-ci.org/gabrielfalcao/lettuce.png)](http://travis-ci.org/gabrielfalcao/lettuce)
+## Fork motivation
+This fork is fixing matcher for mixups of positive + negative cases that were failing in original version.
 
 ## On release names
 
