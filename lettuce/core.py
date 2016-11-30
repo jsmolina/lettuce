@@ -654,12 +654,7 @@ class Scenario(object):
 
         matched = []
 
-        if isinstance(self.tags, list) and not has_exclusionary_tags:
-
-            for tag in self.tags:
-                if tag in tags:
-                    return True
-        else:
+        if not isinstance(self.tags, list):
             self.tags = []
 
         for tag in tags:
