@@ -647,22 +647,35 @@ class Scenario(object):
         if tags is None:
             return True
 
-        has_exclusionary_tags = any([t.startswith('-') for t in tags])
-
-        if not self.tags and not has_exclusionary_tags:
-            return False
-
-        matched = []
+        exclusionary_tags = [t[1:] for t in tags if t.startswith('-') and not t.startswith('-~')]
+        inclusionary_tags = [t for t in tags if not t.startswith('-') and not t.startswith('~')]
 
         if not isinstance(self.tags, list):
             self.tags = []
 
+        # If there are inclusionary tags, at least one must match
+        if len(inclusionary_tags) > 0:
+            matches = set(self.tags).intersection(inclusionary_tags)
+            if len(matches) == 0:
+                # This scenario did not match any of the inclusionary
+                # tags, and it must be excluded
+                return False
+
+        # If there are exclusionary tags, if any match the scenario must
+        # be thrown out
+        if len(exclusionary_tags) > 0:
+            matches = set(self.tags).intersection(exclusionary_tags)
+            if len(matches) > 0:
+                # At least one exclusionary tag matches, omit the
+                # scenario
+                return False
+
+        matched = []
+
         for tag in tags:
-            result = True
             exclude = tag.startswith('-')
             if exclude:
                 tag = tag[1:]
-
             fuzzable = tag.startswith('~')
             if fuzzable:
                 tag = tag[1:]
@@ -675,19 +688,20 @@ class Scenario(object):
                         fuzzed.append(ratio <= 80)
                     else:
                         fuzzed.append(ratio > 80)
-
                 result = any(fuzzed)
                 matched.append(result)
             elif exclude:
                 result = tag not in self.tags
-                # any exclude tag means reject test
-                return False
-            elif tag in self.tags:
-                result = True
+                matched.append(result)
 
-            matched.append(result)
+        # Determine if any tags may optionally be included.
+        # If so, all must fail for the scenario to be omitted
+        if not all(matched):
+            return False
 
-        return matched and all(matched)
+        # If the check make it here, there is no reason to
+        # disclude the test
+        return True
 
     @property
     def evaluated(self):
