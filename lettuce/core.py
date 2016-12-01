@@ -658,6 +658,7 @@ class Scenario(object):
             self.tags = []
 
         for tag in tags:
+            result = True
             exclude = tag.startswith('-')
             if exclude:
                 tag = tag[1:]
@@ -682,7 +683,9 @@ class Scenario(object):
                 # any exclude tag means reject test
                 return False
             elif tag in self.tags:
-                matched.append(True)
+                result = True
+
+            matched.append(result)
 
         return matched and all(matched)
 
