@@ -679,7 +679,8 @@ class Scenario(object):
                 matched.append(result)
             elif exclude:
                 result = tag not in self.tags
-                matched.append(result)
+                # any exclude tag means reject test
+                return False
             elif tag in self.tags:
                 matched.append(True)
 
