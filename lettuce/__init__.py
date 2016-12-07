@@ -129,6 +129,8 @@ class Runner(object):
                 from lettuce.plugins import shell_output as output
             else:
                 from lettuce.plugins import colored_shell_output as output
+        else:
+            from lettuce.plugins import colored_shell_output as output
 
         self.random = random
 
